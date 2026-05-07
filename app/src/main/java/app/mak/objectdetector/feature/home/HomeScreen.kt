@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import app.mak.objectdetector.R
 import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 
@@ -19,7 +20,7 @@ internal fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
 
-    val viewModel: HomeViewModel
+    val viewModel: HomeViewModel = hiltViewModel()
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { isCaptured ->
@@ -34,7 +35,7 @@ internal fun HomeScreen(
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = {
-//            viewModel.launchCamera()
+            viewModel.launchCamera()
         }) {
             Text(stringResource(R.string.capture_image))
         }
