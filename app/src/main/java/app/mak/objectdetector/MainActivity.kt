@@ -1,6 +1,7 @@
 package app.mak.objectdetector
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -21,7 +22,10 @@ class MainActivity : ComponentActivity() {
             ObjectDetectorTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     HomeScreen(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        onNavigateToResult = { imagePath ->
+                            Log.d("MainActivity", imagePath)
+                        }
                     )
                 }
             }
