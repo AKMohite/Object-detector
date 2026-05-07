@@ -27,6 +27,7 @@ internal fun ResultScreen(
     imagePath: String
 ) {
     val viewModel: ResultViewModel = hiltViewModel()
+    viewModel.onImageLoad(imagePath)
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
