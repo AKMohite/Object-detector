@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun HomeScreen(
-    modifier: Modifier = Modifier,
     onNavigateToResult: (String) -> Unit
 ) {
 
@@ -51,7 +50,7 @@ internal fun HomeScreen(
     }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
