@@ -3,14 +3,16 @@ package app.mak.objectdetector.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import app.mak.objectdetector.feature.home.HomeScreen
+import app.mak.objectdetector.feature.result.ResultScreen
 
 @Composable
 internal fun AppNavHost(innerPadding: PaddingValues) {
@@ -28,9 +30,14 @@ internal fun AppNavHost(innerPadding: PaddingValues) {
                 )
             }
             entry<ScreenDestination.ResultRoute> { route ->
-                Text(route.imagePath)
+                ResultScreen(route.imagePath)
             }
         },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         modifier = Modifier.fillMaxSize().padding(innerPadding),
     )
 }
+
