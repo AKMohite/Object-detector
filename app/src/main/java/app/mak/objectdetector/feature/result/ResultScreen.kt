@@ -10,6 +10,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -18,7 +20,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mak.objectdetector.R
+import app.mak.objectdetector.core.ml.DetectionResult
 import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 import coil3.compose.AsyncImage
 
@@ -27,7 +31,10 @@ internal fun ResultScreen(
     imagePath: String
 ) {
     val viewModel: ResultViewModel = hiltViewModel()
-    viewModel.onImageLoad(imagePath)
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.onImageLoad(imagePath)
+    }
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -37,12 +44,13 @@ internal fun ResultScreen(
         ImageSection(
             title = stringResource(R.string.original_image),
             imagePath = imagePath,
-            isOriginal = true
+            isOriginal = true,
         )
         ImageSection(
             title = stringResource(R.string.result_image),
             imagePath = imagePath,
-            isOriginal = false
+            isOriginal = false,
+            results = state.results
         )
     }
 }
@@ -52,7 +60,8 @@ internal fun ImageSection(
     title: String,
     imagePath: String,
     isOriginal: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    results: List<DetectionResult> = emptyList()
 ) {
     Column(
         modifier = modifier
