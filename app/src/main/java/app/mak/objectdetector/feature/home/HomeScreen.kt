@@ -1,5 +1,7 @@
 package app.mak.objectdetector.feature.home
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
@@ -16,12 +18,24 @@ import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 internal fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
+
+    val viewModel: HomeViewModel
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { isCaptured ->
+        if (isCaptured) {
+
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Button(onClick = {}) {
+        Button(onClick = {
+//            viewModel.launchCamera()
+        }) {
             Text(stringResource(R.string.capture_image))
         }
     }
@@ -34,3 +48,4 @@ private fun HomeScreenPreview() {
         HomeScreen()
     }
 }
+
