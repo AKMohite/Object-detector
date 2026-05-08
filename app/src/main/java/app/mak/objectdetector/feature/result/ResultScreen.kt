@@ -23,10 +23,10 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mak.objectdetector.R
+import app.mak.objectdetector.core.ml.DetectionResult
 import app.mak.objectdetector.feature.result.compo.ObjectDetectionOverlay
 import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 import coil3.compose.AsyncImage
-import com.google.mlkit.vision.objects.DetectedObject
 
 @Composable
 internal fun ResultScreen(
@@ -63,7 +63,7 @@ internal fun ImageSection(
     imagePath: String,
     isOriginal: Boolean,
     modifier: Modifier = Modifier,
-    results: List<DetectedObject> = emptyList()
+    results: List<DetectionResult> = emptyList()
 ) {
     Column(
         modifier = modifier
@@ -100,4 +100,3 @@ private fun ResultScreenPreview() {
         ResultScreen("")
     }
 }
-

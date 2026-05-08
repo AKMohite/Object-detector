@@ -2,93 +2,68 @@ package app.mak.objectdetector.feature.result.compo
 
 import android.graphics.BitmapFactory
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import app.mak.objectdetector.R
 import app.mak.objectdetector.core.ml.DetectionResult
 import coil3.compose.AsyncImage
-import com.google.mlkit.vision.objects.DetectedObject
-import java.util.Locale
-import kotlin.math.abs
 
 @Composable
-fun ObjectDetectionOverlay(
+internal fun ObjectDetectionOverlay(
     imagePath: String,
-    detectedObjects: List<DetectedObject>,
+    detectedObjects: List<DetectionResult>,
     modifier: Modifier = Modifier
 ) {
-
     val colors = listOf(
-        Color.Red,
-        Color.Green,
-        Color.Blue,
-        Color.Yellow,
-        Color.Cyan,
-        Color.Magenta
+        Color.Red, Color.Green, Color.Blue, Color.Yellow, Color.Cyan, Color.Magenta
     )
 
-//    val bitmap = remember(imagePath) {
-//        BitmapFactory.decodeFile(imagePath)
-//    }
     val context = LocalContext.current
-
-    val bitmap = remember(imagePath) {
+    // Load bitmap just to get original dimensions for scaling
+    val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+    remember(imagePath) {
         context.contentResolver.openInputStream(imagePath.toUri())?.use {
-            BitmapFactory.decodeStream(it)
+            BitmapFactory.decodeStream(it, null, options)
         }
-    } ?: return
+    }
 
-    Box(modifier = modifier) {
+    val imageWidth = options.outWidth.toFloat()
+    val imageHeight = options.outHeight.toFloat()
 
-        // Background image
-        Image(
-            bitmap = bitmap.asImageBitmap(),
+    if (imageWidth <= 0f || imageHeight <= 0f) return
+
+    val aspectRatio = imageWidth / imageHeight
+
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .aspectRatio(aspectRatio)) {
+        // Use AsyncImage for consistent orientation handling
+        AsyncImage(
+            model = imagePath.toUri(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.FillBounds
         )
 
-        // Overlay canvas
-        Canvas(
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            val imageWidth = bitmap.width.toFloat()
-            val imageHeight = bitmap.height.toFloat()
-
+        Canvas(modifier = Modifier.fillMaxSize()) {
             val scaleX = size.width / imageWidth
             val scaleY = size.height / imageHeight
 
-            detectedObjects.forEach { detectedObject ->
-
-                val colorId =
-                    if (detectedObject.trackingId == null) 0
-                    else abs(
-                        detectedObject.trackingId!! % colors.size
-                    )
-
-                val boxColor = colors[colorId]
-
+            detectedObjects.forEachIndexed { index, detectedObject ->
+                val boxColor = colors[index % colors.size]
                 val rect = detectedObject.boundingBox
 
                 val left = rect.left * scaleX
@@ -100,35 +75,17 @@ fun ObjectDetectionOverlay(
                 drawRect(
                     color = boxColor,
                     topLeft = Offset(left, top),
-                    size = Size(
-                        width = right - left,
-                        height = bottom - top
-                    ),
-                    style = Stroke(width = 4.dp.toPx())
+                    size = Size(right - left, bottom - top),
+                    style = Stroke(width = 3.dp.toPx())
                 )
 
-                // Labels
-                val labels = buildList {
-
-                    detectedObject.labels.forEach { label ->
-
-                        add(label.text)
-
-                        add(
-                            String.format(
-                                Locale.US,
-                                "%.2f%%",
-                                label.confidence * 100
-                            )
-                        )
-                    }
-                }
-
+                // Label background and text
+                val label = detectedObject.label
+                
                 val textPaint = android.graphics.Paint().apply {
                     color = android.graphics.Color.WHITE
-                    textSize = 42f
+                    textSize = 36f
                     isAntiAlias = true
-                    style = android.graphics.Paint.Style.FILL
                 }
 
                 val bgPaint = android.graphics.Paint().apply {
@@ -136,39 +93,15 @@ fun ObjectDetectionOverlay(
                     style = android.graphics.Paint.Style.FILL
                 }
 
-                val lineHeight = 50f
+                val textWidth = textPaint.measureText(label)
+                val textHeight = 40f
 
-                val maxTextWidth = labels.maxOfOrNull {
-                    textPaint.measureText(it)
-                } ?: 0f
-
-                val labelHeight =
-                    labels.size * lineHeight + 20f
-
-                // Label background
                 drawContext.canvas.nativeCanvas.drawRect(
-                    left,
-                    top - labelHeight,
-                    left + maxTextWidth + 20f,
-                    top,
-                    bgPaint
+                    left, top - textHeight, left + textWidth + 8f, top, bgPaint
                 )
-
-                // Draw label text
-                var textY =
-                    top - labelHeight + lineHeight
-
-                labels.forEach { text ->
-
-                    drawContext.canvas.nativeCanvas.drawText(
-                        text,
-                        left + 10f,
-                        textY,
-                        textPaint
-                    )
-
-                    textY += lineHeight
-                }
+                drawContext.canvas.nativeCanvas.drawText(
+                    label, left + 4f, top - 8f, textPaint
+                )
             }
         }
     }

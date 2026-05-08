@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.core.net.toUri
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
-import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
@@ -47,12 +46,13 @@ internal class MLImageDetector @Inject constructor(
             ObjectDetectorOptions.Builder()
                 .setDetectorMode(ObjectDetectorOptions.SINGLE_IMAGE_MODE)
                 .enableMultipleObjects()
-                .enableClassification()  // Optional
+                .enableClassification()
                 .build()
         }
     }
 
-    override suspend fun detect(imagePath: String): List<DetectedObject> = withContext(Dispatchers.IO) {
+    override suspend fun detect(imagePath: String): List<DetectionResult> =
+        withContext(Dispatchers.IO) {
         return@withContext detectObjects(imagePath)
     }
 
@@ -64,29 +64,25 @@ internal class MLImageDetector @Inject constructor(
             objectDetector?.let { detector ->
                 detector.process(image)
                 .addOnSuccessListener { detectedObjects ->
-                    val results: List<DetectionResult> = detectedObjects?.mapNotNull { detection ->
-                        var label = ""
-                        detection.labels.forEach { objectLabel ->
-                            label = "${objectLabel.text}: ${objectLabel.confidence}"
-                        }
+                    val results: List<DetectionResult> = detectedObjects?.map { detection ->
+                        val firstLabel = detection.labels.firstOrNull()
+                        val label =
+                            "${firstLabel?.text ?: "Unknown Object"} (${((firstLabel?.confidence ?: 0f) * 100).toInt()}%)"
                         DetectionResult(
                             boundingBox = detection.boundingBox,
                             label = label,
                         )
                     } ?: emptyList()
-                    continuation.resume(detectedObjects.mapNotNull { it })
+                    continuation.resume(results)
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)
                 }
 
             }
+                ?: continuation.resumeWithException(IllegalStateException("The object detector was not initialised"))
         } catch (e: Exception) {
             continuation.resumeWithException(e)
-        }
-        continuation.invokeOnCancellation {
-            it?.printStackTrace()
-            objectDetector?.close()
         }
     }
 }

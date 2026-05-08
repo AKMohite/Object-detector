@@ -3,8 +3,8 @@ package app.mak.objectdetector.feature.result
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.mak.objectdetector.core.ml.DetectionResult
 import app.mak.objectdetector.core.ml.ImageDetector
-import com.google.mlkit.vision.objects.DetectedObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +17,7 @@ private const val SAVED_IMAGE_PATH = "saved-image-path"
 
 internal data class ResultState(
     val imagePath: String = "",
-    val results: List<DetectedObject> = emptyList()
+    val results: List<DetectionResult> = emptyList()
 )
 
 @HiltViewModel
