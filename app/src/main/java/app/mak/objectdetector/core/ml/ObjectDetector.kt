@@ -3,7 +3,7 @@ package app.mak.objectdetector.core.ml
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.RectF
+import android.graphics.Rect
 import android.net.Uri
 import androidx.core.net.toUri
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -18,7 +18,7 @@ internal interface ImageDetector {
 
 }
 
-internal class MLImageDetector @Inject constructor(
+internal class TensorFlowImageDetector @Inject constructor(
     @param:ApplicationContext private val context: Context
 ): ImageDetector {
 
@@ -67,19 +67,19 @@ internal class MLImageDetector @Inject constructor(
             setupObjectDetector()
         }
         val image = TensorImage.fromBitmap(bitmap)
-        objectDetector?.detect(image)?.map { detection ->
-            DetectionResult(
-                boundingBox = detection.boundingBox,
-                label = detection.categories.firstOrNull()?.label ?: "Unknown",
-                score = detection.categories.firstOrNull()?.score ?: 0f
-            )
-        } ?: emptyList()
+//        objectDetector?.detect(image)?.map { detection ->
+//            DetectionResult(
+//                boundingBox = detection.boundingBox,
+//                label = detection.categories.firstOrNull()?.label ?: "Unknown",
+//                score = detection.categories.firstOrNull()?.score ?: 0f
+//            )
+//        } ?: emptyList()
+        emptyList()
     }
 
 }
 
 internal data class DetectionResult(
-    val boundingBox: RectF,
-    val label: String,
-    val score: Float
+    val boundingBox: Rect,
+    val label: String
 )

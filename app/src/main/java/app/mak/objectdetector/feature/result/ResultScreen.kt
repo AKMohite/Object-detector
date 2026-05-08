@@ -1,5 +1,6 @@
 package app.mak.objectdetector.feature.result
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mak.objectdetector.R
 import app.mak.objectdetector.core.ml.DetectionResult
+import app.mak.objectdetector.feature.result.compo.OverlayView
 import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 import coil3.compose.AsyncImage
 
@@ -80,12 +82,13 @@ internal fun ImageSection(
                 contentScale = ContentScale.Fit
             )
         } else {
-            AsyncImage(
-                model = imagePath.toUri(),
-                contentDescription = title,
-                modifier = Modifier.fillMaxWidth(),
-                contentScale = ContentScale.Fit
-            )
+            AnimatedVisibility(results.isNotEmpty()) {
+                OverlayView(
+                    imagePath = imagePath,
+                    results = results,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }
