@@ -41,6 +41,7 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 objects-detection = { module = "com.google.mlkit:object-detection", version.ref = "objectDetection" }
+objects-detection-custom = { group = "com.google.mlkit", name = "object-detection-custom", version.ref = "objectDetection" }
 tensorflow-lite-task-vision = { group = "org.tensorflow", name = "tensorflow-lite-task-vision", version.ref = "tensorflowLite" }
 
 [plugins]

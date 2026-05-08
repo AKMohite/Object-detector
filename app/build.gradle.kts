@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.androidx.hilt.compose)
     implementation(libs.tensorflow.lite.task.vision)
     implementation(libs.objects.detection)
+    implementation(libs.objects.detection.custom)
     implementation(libs.coil.compose)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
