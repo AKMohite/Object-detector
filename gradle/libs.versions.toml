@@ -16,7 +16,6 @@ kotlinSerialization = "2.3.21"
 coil = "3.4.0"
 lifecycleViewmodelNav3 = "2.11.0-beta01"
 objectDetection = "17.0.2"
-tensorflowLite = "0.4.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,7 +41,6 @@ androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-te
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 objects-detection = { module = "com.google.mlkit:object-detection", version.ref = "objectDetection" }
 objects-detection-custom = { group = "com.google.mlkit", name = "object-detection-custom", version.ref = "objectDetection" }
-tensorflow-lite-task-vision = { group = "org.tensorflow", name = "tensorflow-lite-task-vision", version.ref = "tensorflowLite" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

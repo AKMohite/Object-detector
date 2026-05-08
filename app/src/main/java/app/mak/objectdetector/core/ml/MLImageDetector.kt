@@ -1,7 +1,6 @@
 package app.mak.objectdetector.core.ml
 
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
@@ -65,10 +64,6 @@ internal class MLImageDetector @Inject constructor(
                 detector.process(image)
                 .addOnSuccessListener { detectedObjects ->
                     val results: List<DetectionResult> = detectedObjects?.mapNotNull { detection ->
-                        Log.d("MLImageDetector", "_______________________________________________________")
-                        Log.d("MLImageDetector", "yelllo: ${detection.labels}")
-                        Log.d("MLImageDetector", "yelllo: ${detection.boundingBox}")
-                        Log.d("MLImageDetector", "_______________________________________________________")
                         var label = ""
                         detection.labels.forEach { objectLabel ->
                             label = "${objectLabel.text}: ${objectLabel.confidence}"

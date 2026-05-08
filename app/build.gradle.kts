@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.viewmodel)
     implementation(libs.androidx.hilt.compose)
-    implementation(libs.tensorflow.lite.task.vision)
     implementation(libs.objects.detection)
     implementation(libs.objects.detection.custom)
     implementation(libs.coil.compose)
