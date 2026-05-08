@@ -23,10 +23,10 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import app.mak.objectdetector.R
-import app.mak.objectdetector.core.ml.DetectionResult
-import app.mak.objectdetector.feature.result.compo.OverlayView
+import app.mak.objectdetector.feature.result.compo.ObjectDetectionOverlay
 import app.mak.objectdetector.ui.theme.ObjectDetectorTheme
 import coil3.compose.AsyncImage
+import com.google.mlkit.vision.objects.DetectedObject
 
 @Composable
 internal fun ResultScreen(
@@ -63,7 +63,7 @@ internal fun ImageSection(
     imagePath: String,
     isOriginal: Boolean,
     modifier: Modifier = Modifier,
-    results: List<DetectionResult> = emptyList()
+    results: List<DetectedObject> = emptyList()
 ) {
     Column(
         modifier = modifier
@@ -83,9 +83,9 @@ internal fun ImageSection(
             )
         } else {
             AnimatedVisibility(results.isNotEmpty()) {
-                OverlayView(
+                ObjectDetectionOverlay(
                     imagePath = imagePath,
-                    results = results,
+                    detectedObjects = results,
                     modifier = Modifier.fillMaxWidth()
                 )
             }

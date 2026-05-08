@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.net.toUri
 import com.google.mlkit.common.model.LocalModel
 import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.objects.DetectedObject
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.ObjectDetector
 import com.google.mlkit.vision.objects.ObjectDetectorOptionsBase
@@ -51,7 +52,7 @@ internal class MLImageDetector @Inject constructor(
         }
     }
 
-    override suspend fun detect(imagePath: String): List<DetectionResult> = withContext(Dispatchers.IO) {
+    override suspend fun detect(imagePath: String): List<DetectedObject> = withContext(Dispatchers.IO) {
         return@withContext detectObjects(imagePath)
     }
 
@@ -73,7 +74,7 @@ internal class MLImageDetector @Inject constructor(
                             label = label,
                         )
                     } ?: emptyList()
-                    continuation.resume(results)
+                    continuation.resume(detectedObjects.mapNotNull { it })
                 }
                 .addOnFailureListener { e ->
                     continuation.resumeWithException(e)
