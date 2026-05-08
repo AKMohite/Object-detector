@@ -3,4 +3,5 @@
     <string name="capture_image">Capture image</string>
     <string name="original_image">Original Image</string>
     <string name="result_image">Result Image</string>
+    <string name="go_to_main">Go to Main</string>
 </resources>

@@ -30,14 +30,21 @@ internal fun AppNavHost(innerPadding: PaddingValues) {
                 )
             }
             entry<ScreenDestination.ResultRoute> { route ->
-                ResultScreen(route.imagePath)
+                ResultScreen(
+                    imagePath = route.imagePath,
+                    gotoHomeScreen = {
+                        backStack.removeLastOrNull()
+                    }
+                )
             }
         },
         entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
-        modifier = Modifier.fillMaxSize().padding(innerPadding),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
     )
 }
 
