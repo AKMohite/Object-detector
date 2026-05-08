@@ -21,6 +21,10 @@ A streamlined Android application designed to perform object detection on user c
 3. **Processing:** The app will automatically start the on-device object detection process.
 4. **View Results:** Detected objects are highlighted with bounding boxes and labeled with their text and confidence score.
 
+## Result
+
+![Image Result](images/object-classifier.png)
+
 
 ### References
 - [ML kit Android](https://developers.google.com/ml-kit/vision/object-detection/android)
